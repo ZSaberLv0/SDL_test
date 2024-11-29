@@ -1,0 +1,28 @@
+name: SDL test
+
+on:
+  push:
+    branches: [ "master" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: get-cmake
+      uses: lukka/get-cmake@latest
+
+    - name: test build
+      run: |
+        chmod +x ./build.sh
+        ./build.sh
+
+    # - name: Setup Debug Session
+    #   uses: csexton/debugger-action@master
+
