@@ -1,0 +1,36 @@
+name: Windows
+
+on:
+  push:
+    branches: [ "master" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup MSVC cmd
+      uses: TheMrMilchmann/setup-msvc-dev@v3
+      with:
+        export-path-to-vcvarsall: VCVARSALL_PATH
+        arch: x64
+
+    - name: get-cmake
+      uses: lukka/get-cmake@latest
+
+    - name: Set up NASM
+      uses: ilammy/setup-nasm@v1
+
+    - name: Install ninja-build tool
+      uses: seanmiddleditch/gha-setup-ninja@v5
+
+    - name: test build
+      run: |
+        Invoke-Expression -Command 'cmd.exe /C ".\\build.bat"'
+
